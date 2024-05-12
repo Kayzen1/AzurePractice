@@ -1,0 +1,17 @@
+import azure.functions as func
+import yagmail
+
+def main(req: func.HttpRequest) -> func.HttpResponse:
+    subject = req.params.get('subject')
+    message = req.params.get('message')
+
+    if not subject or not message:
+        return func.HttpResponse(
+             "Please pass both subject and message in the query string or in the request body",
+             status_code=400
+        )
+
+    yag = yagmail.SMTP('your-email@gmail.com', 'your-password')
+    yag.send('recipient-email@gmail.com', subject, message)
+
+    return func.HttpResponse("Email sent successfully!")
